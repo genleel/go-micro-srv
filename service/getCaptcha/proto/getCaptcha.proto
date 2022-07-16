@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package getCaptcha;
+
+option go_package = "./proto;getCaptcha";
+
+
+service GetCaptcha {
+	rpc Call(CallRequest) returns (CallResponse) {}
+}
+
+
+message CallRequest {
+	string uuid = 1;
+}
+
+message CallResponse {
+	bytes img = 1;
+}
