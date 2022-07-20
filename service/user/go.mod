@@ -1,9 +1,8 @@
-module getCaptcha
+module user
 
 go 1.18
 
 require (
-	github.com/afocus/captcha v0.0.0-20191010092841-4bd1f21c8868
 	github.com/go-micro/plugins/v4/registry/consul v1.0.0
 	github.com/gomodule/redigo v1.8.9
 	go-micro.dev/v4 v4.7.0
@@ -23,7 +22,6 @@ require (
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.3.1 // indirect
 	github.com/go-git/go-git/v5 v5.4.2 // indirect
-	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/consul/api v1.9.0 // indirect
@@ -52,7 +50,6 @@ require (
 	github.com/xanzy/ssh-agent v0.3.1 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
-	golang.org/x/image v0.0.0-20220617043117-41969df76e82 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/net v0.0.0-20220708220712-1185a9018129 // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
@@ -69,4 +66,4 @@ require (
 // see https://github.com/etcd-io/etcd/issues/11154 and https://github.com/etcd-io/etcd/issues/11931.
 // replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
 
-replace getcaptcha => ./
+replace user => ./

@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-micro/plugins/v4/registry/consul"
 	"go-micro-srv/web/proto/getCaptcha"
+	"go-micro-srv/web/proto/user"
 	"go-micro-srv/web/utils"
 	"go-micro.dev/v4"
 	"image/png"
@@ -42,7 +43,7 @@ func GetImageCd(ctx *gin.Context) {
 	// 调用远程函数
 	resp, err := microClient.Call(context.TODO(), &getCaptcha.Request{Uuid: uuid})
 	if err != nil {
-		fmt.Println("未找到远程服务...")
+		fmt.Println("未找到远程服务...", err)
 		return
 	}
 
@@ -54,4 +55,28 @@ func GetImageCd(ctx *gin.Context) {
 	png.Encode(ctx.Writer, img)
 
 	fmt.Println("uuid = ", uuid)
+}
+
+func GetSmscd(ctx *gin.Context) {
+
+	phone := ctx.Param("phone")
+	imgCode := ctx.Query("text")
+	uuid := ctx.Query("id")
+
+	consulReg := consul.NewRegistry()
+	consulService := micro.NewService(
+		micro.Registry(consulReg),
+	)
+
+	microClient := user.NewUserService("user", consulService.Client())
+	resp, err := microClient.SendSms(context.TODO(), &user.CallRequest{Phone: phone, ImgCode: imgCode, Uuid: uuid})
+	if err != nil {
+		fmt.Println("未找到远程服务...", err)
+		return
+	}
+
+	//fmt.Println(phone, imgCode, uuid)
+
+	// 发送响应结果
+	ctx.JSON(http.StatusOK, resp)
 }
