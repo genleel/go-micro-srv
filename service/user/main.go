@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/go-micro/plugins/v4/registry/consul"
 	"user/handler"
 	"user/model"
@@ -17,6 +18,7 @@ var (
 
 func main() {
 	model.InitRedis()
+	model.InitDb()
 
 	consulReg := consul.NewRegistry()
 
@@ -28,7 +30,11 @@ func main() {
 	)
 
 	// Register handler
-	pb.RegisterUserHandler(srv.Server(), new(handler.User))
+	err := pb.RegisterUserHandler(srv.Server(), new(handler.User))
+	if err != nil {
+		fmt.Println("RegisterUserHandler err: ", err)
+		return
+	}
 	// Run service
 	if err := srv.Run(); err != nil {
 		log.Fatal(err)

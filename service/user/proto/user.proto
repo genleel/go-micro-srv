@@ -5,9 +5,15 @@ package user;
 option go_package = "./proto;user";
 
 service User {
-	rpc SendSms(CallRequest) returns (CallResponse) {}
-
+	rpc SendSms(CallRequest) returns (CallResponse) {};
+	rpc Register(RegReq) returns (CallResponse) {};
 }
+message RegReq{
+	string mobile = 1;
+	string password = 2;
+	string sms_code = 3;
+}
+
 
 message CallRequest {
 	string phone = 1;

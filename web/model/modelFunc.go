@@ -1,6 +1,8 @@
 package model
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"github.com/gomodule/redigo/redis"
 )
@@ -54,4 +56,18 @@ func SaveSmsCode(phone, code string) error {
 	_, err := conn.Do("setex", phone+"_code", 60*3, code)
 
 	return err
+}
+
+func Login(mobile, pwd string) (string, error) {
+	var user User
+
+	// password加密处理
+	m5 := md5.New()
+	m5.Write([]byte(pwd))
+	pwd_hash := hex.EncodeToString(m5.Sum(nil))
+
+	err := GlobalConn.Select("name").
+		Where("mobile = ?", mobile).Where("password_hash = ?", pwd_hash).Find(&user).Error
+
+	return user.Name, err
 }

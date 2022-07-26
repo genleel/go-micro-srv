@@ -1,6 +1,9 @@
 package model
 
 import (
+	"crypto/md5"
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"github.com/gomodule/redigo/redis"
 )
@@ -54,4 +57,39 @@ func SaveSmsCode(phone, code string) error {
 	_, err := conn.Do("setex", phone+"_code", 60*3, code)
 
 	return err
+}
+
+// 校验短信验证码
+func CheckSmsCode(phone, code string) error {
+	// 连接redis
+	conn := RedisPool.Get()
+
+	// 根据key 获取value
+	sms_code, err := redis.String(conn.Do("get", phone+"_code"))
+	if err != nil {
+		fmt.Println("Redis get err: ", err)
+		return err
+	}
+
+	if sms_code != code {
+		return errors.New("验证码错误.")
+	}
+
+	return nil
+}
+
+// 注册用户写入数据库
+func RegisterUser(mobile, pwd string) error {
+	var user User
+	user.Name = mobile
+	user.Mobile = mobile
+	// 密码加密
+	m5 := md5.New()
+	m5.Write([]byte(pwd))
+	pwd_hash := hex.EncodeToString(m5.Sum(nil))
+
+	user.Password_hash = pwd_hash
+
+	// 插入数据库
+	return GlobalConn.Create(&user).Error
 }

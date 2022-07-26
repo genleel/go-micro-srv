@@ -41,3 +41,24 @@ func (e *User) SendSms(ctx context.Context, req *pb.CallRequest, rsp *pb.CallRes
 	}
 	return nil
 }
+
+func (e *User) Register(ctx context.Context, req *pb.RegReq, rsp *pb.CallResponse) error {
+	// 校验验证码是否正确
+	err := model.CheckSmsCode(req.Mobile, req.SmsCode)
+	if err == nil {
+		// 注册用户写入数据库
+		err := model.RegisterUser(req.Mobile, req.Password)
+		if err != nil {
+			rsp.Errno = utils.RECODE_DBERR
+			rsp.Errmsg = utils.RecodeText(utils.RECODE_DBERR)
+		} else {
+			rsp.Errno = utils.RECODE_OK
+			rsp.Errmsg = utils.RecodeText(utils.RECODE_OK)
+		}
+	} else {
+		rsp.Errno = utils.RECODE_DATAERR
+		rsp.Errmsg = utils.RecodeText(utils.RECODE_DATAERR)
+	}
+
+	return nil
+}
